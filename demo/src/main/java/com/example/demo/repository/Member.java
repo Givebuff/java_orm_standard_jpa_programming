@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="MEMBER")
-public class MemberRepository {
+public class Member {
     @Id @Column(name="ID")
     private String id;
     @Column(name="NAME")
