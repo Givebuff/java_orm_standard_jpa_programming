@@ -62,4 +62,4 @@ public class Member{
 SELECT H2VERSION() FROM DUAL;
 ```
 h2 콘솔에서 버전확인 후 build.gradle을 수정하면 된다   
-runtimeOnly 'com.h2database:h2:2.2.224'
+runtimeOnly 'com.h2database:h2:2 .2.224'
