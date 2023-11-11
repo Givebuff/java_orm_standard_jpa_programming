@@ -11,8 +11,13 @@
   * 영속(managed) : 영속성 컨텍스트에 저장된 상태
   * 준영속(detached) : 영속성 컨텍스트에 저장되었다가 분리된 상태
   * 삭제(removed) : 삭제된 상태
-```mermaid
-graph LR
-A(입력)-->B[연산]
-B-->C(출력)
+```sequence
+New->Managed: persist()
+Managed->Detached: detach(), clear(), close()
+Detached->Managed: merge()
+Managed->Removed: remove()
+Removed->Managed: persist()
+Removed->DB: flush()
+Managed->DB: find(), JPQL
+DB->Managed: flush()
 ```
