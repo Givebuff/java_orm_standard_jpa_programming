@@ -7,16 +7,15 @@ import javax.persistence.*;
 import java.util.List;
 
 class MemberRepositoryTest {
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpabook");
+    EntityManager em = emf.createEntityManager();
+    EntityTransaction tx = em.getTransaction();
 
     @Test
     void test1() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpabook");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-
         try {
             tx.begin();
-            logic(em);
+            logic();
             tx.commit();
         } catch (Exception e){
             tx.rollback();
@@ -27,7 +26,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    void logic(EntityManager em) {
+    void logic() {
         String id = "id1";
         Member member = new Member();
         member.setId(id);
@@ -44,5 +43,31 @@ class MemberRepositoryTest {
         System.out.println("member.size : " + members.size());
 
         em.remove(member);
+    }
+
+    @Test
+    void examMergeMain(){
+        Member member = new Member();
+        member.setId("memberA");
+        member.setUsername("회원1");
+
+        tx.begin();
+        em.persist(member);
+        tx.commit();
+        em.close();
+
+        member.setUsername("회원명 변경");
+
+        tx.begin();
+        Member mergeMember = em.merge(member);
+        tx.commit();
+
+        System.out.println("username 비교");
+        System.out.println(member.getUsername());
+        System.out.println(mergeMember.getUsername());
+
+        System.out.println("영속성 컨텍스트 비교");
+        System.out.println(em.contains(member));
+        System.out.println(em.contains(mergeMember));
     }
 }
