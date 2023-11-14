@@ -58,3 +58,54 @@ public class Member{
 | cascade      | 영속성 전이 기능을 사용한다.                ||
 | targetEntity | 연관된 엔티티의 타입 정보를 설정한다. 잘 사용하지 않음 ||
 
+## 2. 양방향 연관관계 매핑
+
+```java
+@Entity
+public class Team {
+    @Id
+    @Column(name = "TEAM_ID")
+    private String id;
+
+    private String name;
+
+    @OneToMany(mappedBy = "team")
+    private List<Member> members = new ArrayList<Member>();
+    // Getter, Setter
+}
+
+void biDirection() {
+  Team team = em.find(Team.class, "team1");
+  List<Member> members = team.getMembers();
+
+  System.out.println("=================================================================");
+  for(Member member:members){
+    System.out.println("이름 : " + member.getUsername());
+  }
+}
+```
+
+## 3. 연관관계의 주인
+테이블은 외래 키 하나로 두 테이블의 연관관계를 관리한다.   
+엔티티를 단방향으로 매핑하면 참조를 하나만 사용함.   
+엔티티를 양방향 관계로 설정하면 객체의 참조는 둘인데 외래 키는 하나다. 따라서 둘 사이에 차이가 발생한다.   
+이런 차이로 JPA에서 두 객체 연관관계 중 하나를 정해서 테이블의 외래 키를 관리해야 하는데 이것을 연관관계의 주인이라 한다.   
+연관관계의 주인만이 데이터베이스 연관관계와 매핑되고 외래 키를 관리할 수 있다. 반면에 주인이 아닌 쪽은 읽기만 할 수 있다.   
+연관관계의 주인을 정한다는 것은 외래 키 관리자를 선택하는 것이다.
+
+**3-1.mapped 속성**   
+* 주인은 mapped 속성을 사용하지 않는다.
+* 주인이 아니면 mapped 속성을 사용해서 속성의 값으로 연관관계의 주인을 지정해야 한다.
+
+## 4.연관관계 편의 메소드 작성 시 주의사항
+객체 기준으로 양뱡향 연관관계 코드 작성시 위의 코드를 그대로 사용하면 연관관계를 변경할 때 오류가 발생한다.   
+그걸 해결하기 위해 아래와 같이 Setter에 validation 체크 코드를 작성하면 된다.
+```java
+public void setTeam(Team team){
+    if(this.team != null){
+        this.team.getMembers().remove(this);
+    }
+    this.team = team;
+    team.getMembers().add(this);
+}
+```

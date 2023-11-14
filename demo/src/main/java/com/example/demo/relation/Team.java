@@ -1,6 +1,8 @@
 package com.example.demo.relation;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team{
@@ -9,6 +11,17 @@ public class Team{
     private String id;
 
     private String name;
+
+    @OneToMany(mappedBy = "team")
+    private List<Member> members = new ArrayList<Member>();
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
+    }
 
     public String getId() {
         return id;
