@@ -38,4 +38,11 @@ public class Team{
     public void setName(String name) {
         this.name = name;
     }
+
+    public void addMember(Member member){
+        this.members.add(member);
+        if(member.getTeam() != this){
+            member.setTeam(this);
+        }
+    }
 }
