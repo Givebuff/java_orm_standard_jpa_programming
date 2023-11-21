@@ -67,3 +67,85 @@ sout("className = " + memeber.getClass().getName());
 * ManyToOne: EAGER 
 * ManyToMany: LAZY 
 * OneToOne: EAGER
+
+## 3. 영속성 전이 : CASCADE
+JPA에서 엔티티를 저장할 때 연관된 모든 엔티티는 영속 상태여야 한다.
+```java
+class Parent{
+  ...
+    @OneToMany(mapped="parent")
+    private List<Child> children = new ArrayList<Child>();
+  ...
+}
+
+class Child{
+  ...
+    @ManyToOne
+    private Parent parent;
+  ...
+}
+
+void test(){
+    Parent parent = new Parent();
+    em.persist();
+    
+    Child child1 = new Child();
+    child1.setParent(parent);
+    parent.getChildren().add(child1);
+    em.persist(child1);
+
+    Child child2 = new Child();
+    child2.setParent(parent);
+    parent.getChildren().add(child2);
+    em.persist(child2);
+}
+```
+위 코드를 영속성 전이:저장을 사용하면 간단하게 처리 가능하다.
+
+```java
+class Parent{
+  ...
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+    private List<Child> children = new ArrayList<Child>();
+  ...
+}
+
+class Child{
+  ...
+}
+
+void Test(){
+    Child child1 = new Child();
+    Child child2 = new Child();
+    
+    Parent parent = new Parent();
+    child1.setParent();
+    child2.setParent();
+    parent.getChildren().add(child1);
+    parent.getChildren().add(child2);
+    
+    em.persist(parent);
+}
+```
+영속성 전이:삭제(CascadeType.REMOVE)를 사용하면 한번에 삭제 할 수 있다.
+
+## 4. 고아 객체
+부모 엔티티와 연관관계가 끊긴 자식 객체를 고아 객체라 한다.   
+다음 옵션을 사용하면 부모 엔티티의 컬렉션에서 자식 엔티티의 참조만 제거하면 자식 엔티티가 자동으로 삭제할 수 있다.
+```java
+class Parent{
+  ...
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Child> children = new ArrayList<Child>();
+  ...
+}
+
+class Child{
+  ...
+}
+
+void test(){
+    Parent parent = em.find(Parent.class, "pk");
+    parent.getChildren().remove(0); // 플러시가 일어날 때 DB에 적용됨
+}
+```
