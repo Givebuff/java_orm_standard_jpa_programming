@@ -1,6 +1,8 @@
 package com.example.demo.value;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Member")
@@ -20,6 +22,11 @@ public class Member {
     private Address companyAddress;
 
     private Period period;
+
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOODS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+    @Column(name = "FOOD_NAME")
+    private List<String> favoriteFoods = new ArrayList<String>();
 
     public Long getId() {
         return id;
@@ -51,5 +58,13 @@ public class Member {
 
     public void setPeriod(Period period) {
         this.period = period;
+    }
+
+    public List<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(List<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
     }
 }
