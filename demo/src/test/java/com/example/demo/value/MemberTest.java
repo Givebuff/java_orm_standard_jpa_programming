@@ -23,11 +23,8 @@ class MemberTest {
             tx.begin();
             test2();
             tx.commit();
-            System.out.println("cjkim commit complete");
         } catch (Exception e){
             tx.rollback();
-            System.out.println("cjkim commit fail");
-            e.printStackTrace();
         } finally {
             em.close();
         }
