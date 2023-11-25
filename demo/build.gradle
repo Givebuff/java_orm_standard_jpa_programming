@@ -21,6 +21,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'com.h2database:h2:2.2.224'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.querydsl:querydsl-jpa'
 }
 
 tasks.named('test') {
