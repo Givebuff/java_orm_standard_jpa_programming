@@ -23,12 +23,26 @@ class MemberServiceTest {
     MemberRepository memberRepository;
 
     @Test
-    public void signIn() throws Exception{
+    public void signIn() throws Exception {
         Member member = new Member();
         member.setName("kim");
 
         Long saveId = memberService.join(member);
 
         assertEquals(member, memberRepository.findOne(saveId));
+    }
+
+    @Test
+    public void duplicateException() throws Exception{
+        Member member1 = new Member();
+        member1.setName("kim");
+
+        Member member2 = new Member();
+        member2.setName("kim");
+
+        memberService.join(member1);
+        memberService.join(member2);
+
+        fail("예외 발생!");
     }
 }

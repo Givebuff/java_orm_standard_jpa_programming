@@ -1,7 +1,11 @@
 package com.example.demo;
 
+import com.example.demo.repository.ItemRepository;
 import com.example.demo.repository.MemberRepository;
+import com.example.demo.repository.OrderRepository;
+import com.example.demo.service.ItemService;
 import com.example.demo.service.MemberService;
+import com.example.demo.service.OrderService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -124,4 +128,20 @@ public class SpringConfig {
     public MemberRepository memberRepository(){
         return new MemberRepository();
     }
+
+    @Bean
+    public ItemService itemService(){
+        return new ItemService();
+    }
+
+    @Bean
+    public ItemRepository itemRepository(){
+        return new ItemRepository();
+    }
+
+    @Bean
+    public OrderService orderService(){ return new OrderService(); }
+
+    @Bean
+    public OrderRepository orderRepository(){ return new OrderRepository(); }
 }
